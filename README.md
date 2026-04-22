@@ -218,7 +218,7 @@ async fn main() -> Result<(), PronaxError> {
 ## 📄 License
 
 ```
-MIT License © 2024 ZKG | Pronax AI
+MIT License © 2026 ZKG | Pronax AI
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files...
 ```
