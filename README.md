@@ -14,17 +14,52 @@ Here are some ideas to get you started:
 - 😄 Pronouns: ...
 - ⚡ Fun fact: ...
 -->
-# ProNax AI 🚀
+# 🚀 ProNax AI: Next-Gen Local Inference Framework
 
-Welcome to **ProNax AI**, a high-performance framework designed for local model execution and multi-model conversion.
+![ProNax AI Header](https://img.shields.io/badge/Developed%20By-ZKG-blue?style=for-the-badge&logo=github)
+![Build Status](https://img.shields.io/badge/Status-Stable-green?style=for-the-badge)
+![Rust](https://img.shields.io/badge/Language-Rust-orange?style=for-the-badge&logo=rust)
 
-### 👤 Author
-Developed by **ZKG**
-
-### 🤖 About the AI
-- **Name:** ProNax AI
-- **Purpose:** Advanced inference logic, optimized tokenization, and seamless model management.
-- **Framework:** Built for stability and speed in local environments.
+**ProNax AI** is a high-performance, modular AI framework engineered for seamless local model execution and advanced tensor conversions. Built with a focus on speed, privacy, and multi-model compatibility.
 
 ---
-*Developed with passion by ZKG.*
+
+## 👨‍💻 Developed By
+**ZKG** *A vision to bring powerful AI capabilities directly to local hardware.*
+
+---
+
+## 🌟 Key Features
+
+* **Multi-Model Intelligence:** Built-in support for Llama, Gemma, Qwen, DeepSeek, and Mistral architectures.
+* **Advanced Tokenization:** Optimized BPE, SentencePiece, and WordPiece tokenizer traits for high-fidelity text processing.
+* **Local Execution (Ollama Integration):** Designed to work flawlessly with local model execution environments.
+* **Hardware Discovery:** Native GPU/CPU detection for Windows, Linux, and macOS to maximize hardware utilization.
+* **Inference Middleware:** Professional OpenAI and Anthropic compatible API layers for easy integration.
+
+---
+
+## 🛠 Project Structure
+
+The ProNax-Ai ecosystem is divided into specialized modules:
+
+| Module | Description |
+| :--- | :--- |
+| **`app/`** | Core application logic including UI, Auth, and Webview. |
+| **`convert/`** | Specialized converters for Safetensors, PyTorch, and GGUF formats. |
+| **`model/`** | Native implementation of model architectures (Llama 4, Gemma 4, Qwen 3). |
+| **`server/`** | High-performance HTTP server with prompt and logprob handling. |
+| **`ml/nn/`** | Low-level neural network operations (Attention, RoPE, Linear). |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+* **Rust Compiler** (Latest Stable)
+* **Ollama Installed** (For local model execution)
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/Pronax-Ai/pronax-ai.git](https://github.com/Pronax-Ai/pronax-ai.git)
