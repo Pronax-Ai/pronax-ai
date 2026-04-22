@@ -38,7 +38,7 @@ Here are some ideas to get you started:
 
 ## 🔥 What is Pronax AI?
 
-> **Pronax AI** is a next-generation **AI/ML inference engine** crafted entirely in **Rust** 🦀, engineered for **sub-millisecond latency** and **production-grade reliability**. Built by **[ZKG](https://github.com/ZKG)** — pushing the boundaries of what's possible with local AI infrastructure.
+> **Pronax AI** is a next-generation **AI/ML inference engine** crafted entirely in **Rust** 🦀, engineered for **sub-millisecond latency** and **production-grade reliability**. Built by **[ZKG](https://github.com/ZKG-786)** — pushing the boundaries of what's possible with local AI infrastructure.
 
 ### 🎯 Core Philosophy
 
@@ -189,11 +189,24 @@ async fn main() -> Result<(), PronaxError> {
 
 ---
 
+## 💬 Community & Support
+
+Have questions or want to connect with other developers?
+
+| Platform | How to Engage |
+|----------|---------------|
+| 🐛 **Issues** | [Report bugs](https://github.com/ProNax-Ai/pronax-ai/issues) or request features |
+| 💭 **Discussions** | [Ask questions](https://github.com/ProNax-Ai/pronax-ai/discussions) and share ideas |
+| ⭐ **Star** | Star this repo to show support and get updates |
+| 🍴 **Fork** | Fork to contribute or customize for your needs |
+
+---
+
 ## 🌐 Connect with ZKG
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/@ZKG-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ZKG)
+[![GitHub](https://img.shields.io/badge/@ZKG--786-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ZKG-786)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](#)
 [![Twitter](https://img.shields.io/badge/@ZKG-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](#)
 [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](#)
