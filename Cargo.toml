@@ -1,0 +1,45 @@
+[package]
+name = "pronax-ai"
+version = "0.1.0"
+edition = "2021"
+authors = ["ZKG <zkg@pronax.ai>"]
+description = "3D Spatial AI Engine - High-Performance Neural Inference Framework"
+license = "MIT"
+repository = "https://github.com/ProNax-Ai/pronax-ai"
+keywords = ["ai", "inference", "3d-spatial", "multimodal", "rust"]
+categories = ["science", "api-bindings", "command-line-utilities"]
+
+[features]
+default = []
+cuda = []
+metal = []
+vulkan = []
+portable_simd = []
+
+[dependencies]
+# Core async runtime
+tokio = { version = "1.35", features = ["full"] }
+async-trait = "0.1"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# CLI
+clap = { version = "4.4", features = ["derive"] }
+colored = "2.1"
+
+# Utilities
+uuid = { version = "1.6", features = ["v4", "serde"] }
+
+[[bin]]
+name = "pronax"
+path = "src/main.rs"
+
+[lib]
+name = "pronax"
+path = "src/lib.rs"
