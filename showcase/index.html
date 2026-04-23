@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pronax AI - Next-Gen Inference Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #0a0a0f;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 3px; }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf, #00d4ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* Glow Effects */
+        .glow-cyan { box-shadow: 0 0 30px rgba(0, 212, 255, 0.3); }
+        .glow-purple { box-shadow: 0 0 30px rgba(123, 44, 191, 0.3); }
+        
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+        }
+        
+        /* 3D Canvas */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Neural Network Animation */
+        .neural-node {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #00d4ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00d4ff;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+        
+        /* Terminal Typing */
+        .terminal-line {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        
+        /* Status Badge */
+        .status-live {
+            animation: livePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Floating Animation */
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Grid Background */
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        /* Code Block */
+        .code-block {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(10,10,15,0.9));
+            border-left: 3px solid #00d4ff;
+        }
+        
+        /* Button Hover */
+        .btn-cyber {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-cyber::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn-cyber:hover::before {
+            left: 100%;
+        }
+        
+        /* Architecture Layer */
+        .arch-layer {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+        .arch-layer:hover {
+            transform: translateZ(20px) scale(1.02);
+        }
+        
+        /* Connection Lines */
+        .connection-line {
+            stroke: url(#lineGradient);
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 5,5;
+            animation: dash 20s linear infinite;
+        }
+        
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+        
+        /* Metric Counter */
+        .metric-value {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Scanline Effect */
+        .scanlines::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.1),
+                rgba(0,0,0,0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="cyber-grid">
+    <!-- 3D Background Canvas -->
+    <div id="canvas-container"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-card mx-4 mt-4 px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+                    <span class="text-xl font-bold">P</span>
+                </div>
+                <span class="text-xl font-bold gradient-text">Pronax AI</span>
+                <span class="px-2 py-0.5 text-xs bg-green-500/20 text-green-400 rounded-full status-live mono">● LIVE</span>
+            </div>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#features" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Features</a>
+                <a href="#architecture" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Architecture</a>
+                <a href="#performance" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Performance</a>
+                <a href="#demo" class="text-sm text-gray-400 hover:text-cyan-400 transition-colors">Demo</a>
+                <button class="btn-cyber px-4 py-2 bg-cyan-500/20 border border-cyan-500/50 rounded-lg text-cyan-400 text-sm font-medium hover:bg-cyan-500/30">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20">
+        <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8">
+                <span class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+                <span class="text-sm text-cyan-400 mono">v2.0 Production Ready</span>
+                <span class="text-gray-500">|</span>
+                <span class="text-sm text-gray-400">Built with Rust</span>
+                <span class="text-orange-400">🦀</span>
+            </div>
+            
+            <!-- Main Title -->
+            <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">
+                <span class="gradient-text">PRONAX</span><br>
+                <span class="text-white">AI ENGINE</span>
+            </h1>
+            
+            <!-- Subtitle -->
+            <p class="text-xl md:text-2xl text-gray-400 mb-4 max-w-3xl mx-auto">
+                Sub-millisecond AI inference. Memory-safe. Production-grade.
+            </p>
+            <p class="text-lg text-gray-500 mb-12 max-w-2xl mx-auto">
+                Next-generation multimodal AI infrastructure crafted in Rust. 
+                Featuring native GGUF support, CUDA/Metal acceleration, and OpenAI-compatible APIs.
+            </p>
+            
+            <!-- CTA Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
+                <button class="btn-cyber px-8 py-4 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-xl font-semibold text-white glow-cyan hover:scale-105 transition-transform">
+                    🚀 Launch Demo
+                </button>
+                <button class="btn-cyber px-8 py-4 glass-card rounded-xl font-semibold text-cyan-400 border border-cyan-500/30 hover:border-cyan-500/60 transition-colors">
+                    📖 Documentation
+                </button>
+                <button class="btn-cyber px-8 py-4 glass-card rounded-xl font-semibold text-purple-400 border border-purple-500/30 hover:border-purple-500/60 transition-colors">
+                    ⭐ Star on GitHub
+                </button>
+            </div>
+            
+            <!-- Live Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="glass-card p-4 text-center">
+                    <div class="text-3xl font-bold text-cyan-400 metric-value" data-target="92">0</div>
+                    <div class="text-xs text-gray-500 mt-1">Tokens/sec</div>
+                </div>
+                <div class="glass-card p-4 text-center">
+                    <div class="text-3xl font-bold text-purple-400 metric-value" data-target="38">0</div>
+                    <div class="text-xs text-gray-500 mt-1">ms Latency</div>
+                </div>
+                <div class="glass-card p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400 metric-value" data-target="99">0</div>
+                    <div class="text-xs text-gray-500 mt-1">% Uptime</div>
+                </div>
+                <div class="glass-card p-4 text-center">
+                    <div class="text-3xl font-bold text-orange-400 metric-value" data-target="15">0</div>
+                    <div class="text-xs text-gray-500 mt-1">Models Active</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 float">
+            <div class="w-6 h-10 border-2 border-cyan-500/50 rounded-full flex justify-center pt-2">
+                <div class="w-1.5 h-3 bg-cyan-400 rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="relative py-24 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">System Architecture</span>
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    5-layer architecture designed for maximum performance and scalability
+                </p>
+            </div>
+            
+            <!-- 3D Architecture Stack -->
+            <div class="relative" style="perspective: 1000px;">
+                <!-- Layer 1: API Gateway -->
+                <div class="arch-layer glass-card p-6 mb-4 border-l-4 border-cyan-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-cyan-400 mb-2">🌐 API Gateway Layer</h3>
+                            <p class="text-sm text-gray-400">OpenAI Compatible • Anthropic Claude • WebSocket</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 text-xs bg-cyan-500/20 text-cyan-400 rounded-full mono">REST</span>
+                            <span class="px-3 py-1 text-xs bg-cyan-500/20 text-cyan-400 rounded-full mono">WS</span>
+                            <span class="px-3 py-1 text-xs bg-cyan-500/20 text-cyan-400 rounded-full mono">gRPC</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Connection -->
+                <div class="flex justify-center my-2">
+                    <div class="w-0.5 h-8 bg-gradient-to-b from-cyan-500 to-purple-500"></div>
+                </div>
+                
+                <!-- Layer 2: Intelligence Middleware -->
+                <div class="arch-layer glass-card p-6 mb-4 border-l-4 border-purple-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-400 mb-2">🔐 Intelligence Middleware</h3>
+                            <p class="text-sm text-gray-400">Auth Engine • Rate Limiter • KV Cache • Load Balancer</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 text-xs bg-purple-500/20 text-purple-400 rounded-full mono">JWT</span>
+                            <span class="px-3 py-1 text-xs bg-purple-500/20 text-purple-400 rounded-full mono">Redis</span>
+                            <span class="px-3 py-1 text-xs bg-purple-500/20 text-purple-400 rounded-full mono">Queue</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Connection -->
+                <div class="flex justify-center my-2">
+                    <div class="w-0.5 h-8 bg-gradient-to-b from-purple-500 to-pink-500"></div>
+                </div>
+                
+                <!-- Layer 3: Neural Model Registry -->
+                <div class="arch-layer glass-card p-6 mb-4 border-l-4 border-pink-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-pink-400 mb-2">🧠 Neural Model Registry</h3>
+                            <p class="text-sm text-gray-400">Gemma 4 • DeepSeek 3 • LLaMA 4 • Mistral 3 • BERT</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 text-xs bg-pink-500/20 text-pink-400 rounded-full mono">GGUF</span>
+                            <span class="px-3 py-1 text-xs bg-pink-500/20 text-pink-400 rounded-full mono">ONNX</span>
+                            <span class="px-3 py-1 text-xs bg-pink-500/20 text-pink-400 rounded-full mono">SafeTensors</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Connection -->
+                <div class="flex justify-center my-2">
+                    <div class="w-0.5 h-8 bg-gradient-to-b from-pink-500 to-green-500"></div>
+                </div>
+                
+                <!-- Layer 4: ML Execution Engine -->
+                <div class="arch-layer glass-card p-6 mb-4 border-l-4 border-green-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-green-400 mb-2">⚙️ ML Execution Engine</h3>
+                            <p class="text-sm text-gray-400">GGML Core • CUDA Kernels • Metal GPU • Vulkan Compute</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 text-xs bg-green-500/20 text-green-400 rounded-full mono">CUDA</span>
+                            <span class="px-3 py-1 text-xs bg-green-500/20 text-green-400 rounded-full mono">Metal</span>
+                            <span class="px-3 py-1 text-xs bg-green-500/20 text-green-400 rounded-full mono">Vulkan</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Connection -->
+                <div class="flex justify-center my-2">
+                    <div class="w-0.5 h-8 bg-gradient-to-b from-green-500 to-orange-500"></div>
+                </div>
+                
+                <!-- Layer 5: Hardware Abstraction -->
+                <div class="arch-layer glass-card p-6 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-400 mb-2">🖥️ Hardware Abstraction Layer</h3>
+                            <p class="text-sm text-gray-400">GPU Detection • CPU Optimization • Memory Management</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 text-xs bg-orange-500/20 text-orange-400 rounded-full mono">NVIDIA</span>
+                            <span class="px-3 py-1 text-xs bg-orange-500/20 text-orange-400 rounded-full mono">Apple Silicon</span>
+                            <span class="px-3 py-1 text-xs bg-orange-500/20 text-orange-400 rounded-full mono">AMD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Matrix -->
+    <section id="features" class="relative py-24 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Feature Matrix</span>
+                </h2>
+                <p class="text-gray-400">Complete AI infrastructure capabilities</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature Cards -->
+                <div class="glass-card p-6 hover:border-cyan-500/50 transition-colors group">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-2xl">🧠</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Gemma 4 Multimodal</h3>
+                    <p class="text-sm text-gray-400">Audio + Vision + Text native support with state-of-the-art performance</p>
+                    <span class="inline-block mt-3 px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">Production Ready</span>
+                </div>
+                
+                <div class="glass-card p-6 hover:border-cyan-500/50 transition-colors group">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-2xl">🔍</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">DeepSeek 3 OCR</h3>
+                    <p class="text-sm text-gray-400">Document understanding with layout preservation and structured output</p>
+                    <span class="inline-block mt-3 px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">Production Ready</span>
+                </div>
+                
+                <div class="glass-card p-6 hover:border-cyan-500/50 transition-colors group">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500/20 to-pink-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-2xl">🦙</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">LLaMA 4 Vision</h3>
+                    <p class="text-sm text-gray-400">Meta's latest with advanced vision capabilities and reasoning</p>
+                    <span class="inline-block mt-3 px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">Production Ready</span>
+                </div>
+                
+                <div class="glass-card p-6 hover:border-cyan-500/50 transition-colors group">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-2xl">⚡</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Smart KV Caching</h3>
+                    <p class="text-sm text-gray-400">10x faster sequential inference with intelligent memory management</p>
+                    <span class="inline-block mt-3 px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">Optimized</span>
+                </div>
+                
+                <div class="glass-card p-6 hover:border-cyan-500/50 transition-colors group">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-2xl">🎯</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">GGUF/GGML Native</h3>
+                    <p class="text-sm text-gray-400">Zero-overhead model format integration with custom quantization</p>
+                    <span class="inline-block mt-3 px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">Core Feature</span>
+                </div>
+                
+                <div class="glass-card p-6 hover:border-cyan-500/50 transition-colors group">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="text-2xl">🔌</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">OpenAI Compatible</h3>
+                    <p class="text-sm text-gray-400">100% API compatible drop-in replacement for seamless migration</p>
+                    <span class="inline-block mt-3 px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">Compatible</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Benchmarks -->
+    <section id="performance" class="relative py-24 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Performance Benchmarks</span>
+                </h2>
+                <p class="text-gray-400">Real-world inference metrics on production hardware</p>
+            </div>
+            
+            <div class="glass-card overflow-hidden">
+                <div class="p-6 border-b border-white/10">
+                    <h3 class="text-xl font-semibold">Inference Performance</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left text-sm text-gray-400 border-b border-white/10">
+                                <th class="p-4 font-medium">Model</th>
+                                <th class="p-4 font-medium">Size</th>
+                                <th class="p-4 font-medium">Tokens/sec</th>
+                                <th class="p-4 font-medium">Latency (TTFT)</th>
+                                <th class="p-4 font-medium">Platform</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="p-4 font-medium text-cyan-400">Gemma-4-9B</td>
+                                <td class="p-4 text-gray-400">Q4_K_M</td>
+                                <td class="p-4"><span class="text-green-400 font-mono">85 tok/s</span></td>
+                                <td class="p-4"><span class="text-green-400 font-mono">45ms</span></td>
+                                <td class="p-4 text-gray-400">RTX 4090</td>
+                            </tr>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="p-4 font-medium text-purple-400">DeepSeek-3-8B</td>
+                                <td class="p-4 text-gray-400">Q4_K_M</td>
+                                <td class="p-4"><span class="text-green-400 font-mono">92 tok/s</span></td>
+                                <td class="p-4"><span class="text-green-400 font-mono">38ms</span></td>
+                                <td class="p-4 text-gray-400">RTX 4090</td>
+                            </tr>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="p-4 font-medium text-pink-400">LLaMA-4-8B</td>
+                                <td class="p-4 text-gray-400">Q4_K_M</td>
+                                <td class="p-4"><span class="text-green-400 font-mono">88 tok/s</span></td>
+                                <td class="p-4"><span class="text-green-400 font-mono">42ms</span></td>
+                                <td class="p-4 text-gray-400">RTX 4090</td>
+                            </tr>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="p-4 font-medium text-orange-400">Gemma-4-4B</td>
+                                <td class="p-4 text-gray-400">Q4_K_M</td>
+                                <td class="p-4"><span class="text-green-400 font-mono">120 tok/s</span></td>
+                                <td class="p-4"><span class="text-green-400 font-mono">25ms</span></td>
+                                <td class="p-4 text-gray-400">M3 Max</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="p-4 font-medium text-blue-400">BERT-Embed</td>
+                                <td class="p-4 text-gray-400">Base</td>
+                                <td class="p-4"><span class="text-green-400 font-mono">2,500 tok/s</span></td>
+                                <td class="p-4"><span class="text-green-400 font-mono">5ms</span></td>
+                                <td class="p-4 text-gray-400">CPU (16 cores)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo Terminal -->
+    <section id="demo" class="relative py-24 px-4">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Live Demo</span>
+                </h2>
+                <p class="text-gray-400">See Pronax AI in action with real-time inference</p>
+            </div>
+            
+            <!-- Terminal Window -->
+            <div class="glass-card overflow-hidden glow-cyan">
+                <!-- Terminal Header -->
+                <div class="flex items-center gap-2 px-4 py-3 bg-black/40 border-b border-white/10">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="flex-1 text-center">
+                        <span class="text-xs text-gray-500 mono">pronax-ai-demo — zsh</span>
+                    </div>
+                </div>
+                
+                <!-- Terminal Content -->
+                <div class="p-6 bg-black/60 code-block font-mono text-sm min-h-[400px]" id="terminal">
+                    <div class="terminal-line mb-2">
+                        <span class="text-green-400">➜</span> <span class="text-cyan-400">~</span> <span class="text-white">pronax --version</span>
+                    </div>
+                    <div class="terminal-line mb-4 text-gray-400">
+                        pronax-ai v2.0.1-production (rust 1.75, cuda 12.2, metal 3.0)
+                    </div>
+                    
+                    <div class="terminal-line mb-2">
+                        <span class="text-green-400">➜</span> <span class="text-cyan-400">~</span> <span class="text-white">pronax pull gemma-4-9b-it-q4_k_m.gguf</span>
+                    </div>
+                    <div class="terminal-line mb-1 text-blue-400">
+                        📦 Downloading gemma-4-9b-it-q4_k_m.gguf...
+                    </div>
+                    <div class="terminal-line mb-4">
+                        <span class="text-green-400">✓</span> <span class="text-gray-400">Model downloaded (5.2 GB) in 45s</span>
+                    </div>
+                    
+                    <div class="terminal-line mb-2">
+                        <span class="text-green-400">➜</span> <span class="text-cyan-400">~</span> <span class="text-white">pronax serve --model gemma-4-9b-it --port 8080</span>
+                    </div>
+                    <div class="terminal-line mb-1 text-cyan-400">
+                        🚀 Initializing Pronax AI Server...
+                    </div>
+                    <div class="terminal-line mb-1 text-gray-400">
+                        [INFO] GPU: NVIDIA RTX 4090 (24GB VRAM)
+                    </div>
+                    <div class="terminal-line mb-1 text-gray-400">
+                        [INFO] CUDA: 12.2 | Tensor Cores: Enabled
+                    </div>
+                    <div class="terminal-line mb-1 text-gray-400">
+                        [INFO] KV Cache: Smart caching enabled
+                    </div>
+                    <div class="terminal-line mb-4 text-green-400">
+                        ✓ Server ready on http://localhost:8080
+                    </div>
+                    
+                    <div class="terminal-line mb-2">
+                        <span class="text-green-400">➜</span> <span class="text-cyan-400">~</span> <span class="text-white">curl -X POST http://localhost:8080/v1/chat/completions \\
+                        -H "Content-Type: application/json" \\
+                        -d '{"model":"gemma-4","messages":[{"role":"user","content":"Explain quantum computing"}]}'</span>
+                    </div>
+                    
+                    <!-- Streaming Response -->
+                    <div class="terminal-line mt-4 p-4 bg-white/5 rounded-lg" id="streaming-response">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs text-cyan-400">ASSISTANT</span>
+                            <span class="text-xs text-gray-500">|</span>
+                            <span class="text-xs text-green-400">streaming...</span>
+                        </div>
+                        <div class="text-gray-300 leading-relaxed" id="typewriter-text"></div>
+                        <span class="inline-block w-2 h-4 bg-cyan-400 animate-pulse mt-2"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <button class="glass-card p-4 text-center hover:border-cyan-500/50 transition-colors group" onclick="runDemo('vision')">
+                    <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform">🖼️</span>
+                    <span class="text-sm text-gray-400">Vision Analysis</span>
+                </button>
+                <button class="glass-card p-4 text-center hover:border-cyan-500/50 transition-colors group" onclick="runDemo('audio')">
+                    <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform">🎙️</span>
+                    <span class="text-sm text-gray-400">Audio Pipeline</span>
+                </button>
+                <button class="glass-card p-4 text-center hover:border-cyan-500/50 transition-colors group" onclick="runDemo('embed')">
+                    <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform">📊</span>
+                    <span class="text-sm text-gray-400">Embeddings</span>
+                </button>
+                <button class="glass-card p-4 text-center hover:border-cyan-500/50 transition-colors group" onclick="runDemo('batch')">
+                    <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform">⚡</span>
+                    <span class="text-sm text-gray-400">Batch Process</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-16 px-4 border-t border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+                            <span class="text-xl font-bold">P</span>
+                        </div>
+                        <span class="text-xl font-bold gradient-text">Pronax AI</span>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Next-generation AI inference engine crafted in Rust. Built by ZKG.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-8 h-8 rounded-lg glass-card flex items-center justify-center hover:border-cyan-500/50 transition-colors">
+                            <span class="text-sm">🐙</span>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-lg glass-card flex items-center justify-center hover:border-cyan-500/50 transition-colors">
+                            <span class="text-sm">🐦</span>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-lg glass-card flex items-center justify-center hover:border-cyan-500/50 transition-colors">
+                            <span class="text-sm">💬</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Product</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Benchmarks</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Changelog</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Developers</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">API Reference</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">SDK</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">GitHub</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-sm text-gray-500">
+                    © 2026 ZKG | Pronax AI. MIT License.
+                </p>
+                <p class="text-sm text-gray-500 mono">
+                    Built with ⚡ by <a href="https://github.com/ZKG-786" class="text-cyan-400 hover:underline">ZKG</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js 3D Background
+        const initThreeJS = () => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+            
+            // Create neural network particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 150;
+            const posArray = new Float32Array(particlesCount * 3);
+            
+            for(let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 20;
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x00d4ff,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+            
+            // Add connection lines
+            const linesMaterial = new THREE.LineBasicMaterial({
+                color: 0x00d4ff,
+                transparent: true,
+                opacity: 0.15
+            });
+            
+            camera.position.z = 5;
+            
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+            
+            // Animation loop
+            const animate = () => {
+                requestAnimationFrame(animate);
+                
+                particlesMesh.rotation.x += 0.001;
+                particlesMesh.rotation.y += 0.001;
+                
+                // Subtle mouse following
+                particlesMesh.rotation.x += mouseY * 0.0005;
+                particlesMesh.rotation.y += mouseX * 0.0005;
+                
+                renderer.render(scene, camera);
+            };
+            
+            animate();
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+        
+        // GSAP Animations
+        const initGSAP = () => {
+            // Animate terminal lines
+            gsap.to('.terminal-line', {
+                opacity: 1,
+                x: 0,
+                duration: 0.5,
+                stagger: 0.2,
+                ease: 'power2.out'
+            });
+            
+            // Animate metric counters
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                const target = parseInt(metric.getAttribute('data-target'));
+                gsap.to(metric, {
+                    innerHTML: target,
+                    duration: 2,
+                    snap: { innerHTML: 1 },
+                    ease: 'power2.out'
+                });
+            });
+            
+            // Scroll animations
+            gsap.utils.toArray('.arch-layer').forEach((layer, i) => {
+                gsap.from(layer, {
+                    scrollTrigger: {
+                        trigger: layer,
+                        start: 'top 80%'
+                    },
+                    opacity: 0,
+                    y: 50,
+                    duration: 0.8,
+                    delay: i * 0.1,
+                    ease: 'power3.out'
+                });
+            });
+        };
+        
+        // Typewriter effect for demo
+        const initTypewriter = () => {
+            const text = "Quantum computing harnesses the principles of quantum mechanics to process information in ways that classical computers cannot. Unlike traditional bits that exist as either 0 or 1, quantum bits (qubits) can exist in superposition, representing multiple states simultaneously. This enables quantum computers to solve certain problems exponentially faster...";
+            const element = document.getElementById('typewriter-text');
+            let index = 0;
+            
+            const type = () => {
+                if (index < text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(type, 30);
+                }
+            };
+            
+            // Start typing after a delay
+            setTimeout(type, 2000);
+        };
+        
+        // Demo functions
+        const runDemo = (type) => {
+            const demos = {
+                vision: "🖼️ Processing image input...\nDetected: Urban cityscape with modern architecture\nConfidence: 94.2%\nObjects: Buildings (12), Cars (8), People (23)",
+                audio: "🎙️ Transcribing audio stream...\n\"The future of AI is decentralized and privacy-preserving...\"\nLanguage: English\nConfidence: 98.7%",
+                embed: "📊 Generating embeddings...\nVector dimension: 768\nProcessing time: 12ms\nSimilarity search: 0.89 cosine similarity",
+                batch: "⚡ Batch processing 1000 requests...\nThroughput: 1,250 req/s\nAvg latency: 15ms\nSuccess rate: 99.99%"
+            };
+            
+            const element = document.getElementById('typewriter-text');
+            element.textContent = demos[type] || demos.vision;
+        };
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            initThreeJS();
+            initGSAP();
+            initTypewriter();
+        });
+    </script>
+</body>
+</html>
