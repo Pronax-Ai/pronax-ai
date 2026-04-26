@@ -4,100 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProNax AI - 3D Spatial Intelligence</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="./dist/output.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-            min-height: 100vh;
-        }
-        
-        .glass-morphism {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .neon-glow {
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-        }
-        
-        .typing-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #00d4ff;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-        
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        @keyframes typing {
-            0%, 80%, 100% {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        
-        .message-bubble {
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .spatial-visualization {
-            position: relative;
-            width: 60px;
-            height: 60px;
-            transform-style: preserve-3d;
-            animation: rotate3d 10s infinite linear;
-        }
-        
-        @keyframes rotate3d {
-            from {
-                transform: rotateX(0deg) rotateY(0deg);
-            }
-            to {
-                transform: rotateX(360deg) rotateY(360deg);
-            }
-        }
-        
-        .spatial-cube {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(45deg, #00d4ff, #00ff88);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            opacity: 0.8;
-        }
+        /* Font Awesome fallbacks - using emojis for production */
+        .fa-robot:before { content: "🤖"; }
+        .fa-paper-plane:before { content: "✈️"; }
+        .fa-cog:before { content: "⚙️"; }
+        .fa-times:before { content: "✖️"; }
+        .fa-code:before { content: "💻"; }
+        .fa-brain:before { content: "🧠"; }
+        .fa-lightbulb:before { content: "💡"; }
+        .fa-chart-line:before { content: "📈"; }
+        .fa-check-circle:before { content: "✅"; }
+        .fa-spinner:before { content: "⏳"; }
+        .fa-exclamation-triangle:before { content: "⚠️"; }
+        .fa-info-circle:before { content: "ℹ️"; }
     </style>
 </head>
 <body class="text-white">
@@ -231,7 +154,7 @@
     <script>
         class ProNaxChat {
             constructor() {
-                this.apiUrl = 'https://your-domain.com/api/v1/chat/completions';
+                this.apiUrl = 'http://localhost:8080/api/v1/chat/completions';
                 this.apiKey = 'pronax-key';
                 this.settings = {
                     temperature: 0.7,
