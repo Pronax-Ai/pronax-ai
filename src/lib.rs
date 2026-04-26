@@ -5,9 +5,7 @@
 pub mod cli;
 
 // TODO: Re-enable these modules after fixing compilation errors
-// pub mod runner;
-// pub mod convert;
-// pub mod model;
+// pub mod cli;
 // pub mod kvcache;
 // pub mod discover;
 

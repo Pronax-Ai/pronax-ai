@@ -1,0 +1,461 @@
+﻿cargo :     Checking pronax-ai v0.1.0 (E:\ProNax-Ai)
+At line:1 char:68
++ ... rs.txt -Force -ErrorAction SilentlyContinue; cargo check 2>&1 | Out-F ...
++                                                  ~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Checking pr... (E:\ProNax-Ai):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error[E0583]: file not found for module `server`
+ --> src\lib.rs:6:1
+  |
+6 | pub mod server;
+  | ^^^^^^^^^^^^^^^
+  |
+  = help: to create the module `server`, create file "src\server.rs" or "src\server\mod.rs"
+  = note: if there is a `mod server` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0583]: file not found for module `fs`
+ --> src\lib.rs:7:1
+  |
+7 | pub mod fs;
+  | ^^^^^^^^^^^
+  |
+  = help: to create the module `fs`, create file "src\fs.rs" or "src\fs\mod.rs"
+  = note: if there is a `mod fs` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0583]: file not found for module `manifest`
+ --> src\lib.rs:8:1
+  |
+8 | pub mod manifest;
+  | ^^^^^^^^^^^^^^^^^
+  |
+  = help: to create the module `manifest`, create file "src\manifest.rs" or "src\manifest\mod.rs"
+  = note: if there is a `mod manifest` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0405]: cannot find trait `Display` in this scope
+  --> src\..\ml\pronax_ml_device_mgr.rs:37:6
+   |
+37 | impl Display for ComputeLibrary {
+   |      ^^^^^^^ not found in this scope
+   |
+help: consider importing one of these traits
+   |
+ 3 + use crate::pronax_ml_device_mgr::fmt::Display;
+   |
+ 3 + use std::fmt::Display;
+   |
+
+error[E0405]: cannot find trait `Display` in this scope
+  --> src\..\ml\pronax_ml_device_mgr.rs:71:6
+   |
+71 | impl Display for DeviceType {
+   |      ^^^^^^^ not found in this scope
+   |
+help: consider importing one of these traits
+   |
+ 3 + use crate::pronax_ml_device_mgr::fmt::Display;
+   |
+ 3 + use std::fmt::Display;
+   |
+
+error[E0405]: cannot find trait `Display` in this scope
+   --> src\..\ml\pronax_ml_device_mgr.rs:435:6
+    |
+435 | impl Display for FlashAttentionMode {
+    |      ^^^^^^^ not found in this scope
+    |
+help: consider importing one of these traits
+    |
+  3 + use crate::pronax_ml_device_mgr::fmt::Display;
+    |
+  3 + use std::fmt::Display;
+    |
+
+error[E0425]: cannot find type `HashSet` in this scope
+   --> src\..\ml\pronax_ml_device_mgr.rs:458:32
+    |
+458 |     pub active_devices: RwLock<HashSet<TitanSpatialDeviceHandle>>,
+    |                                ^^^^^^^
+    |
+   --> /rustc/59807616e1fa2540724bfbac14d7976d7e4a3860/library\core\src\hash\mod.rs:312:0
+    |
+    = note: similarly named trait `Hasher` defined here
+    |
+    = note: struct `crate::ml::path_utils::HashSet` exists but is inaccessible
+help: a trait with a similar name exists
+    |
+458 -     pub active_devices: RwLock<HashSet<TitanSpatialDeviceHandle>>,
+458 +     pub active_devices: RwLock<Hasher<TitanSpatialDeviceHandle>>,
+    |
+help: consider importing this struct
+    |
+  3 + use std::collections::HashSet;
+    |
+
+error[E0433]: cannot find type `HashSet` in this scope
+   --> src\..\ml\pronax_ml_device_mgr.rs:472:41
+    |
+472 |             active_devices: RwLock::new(HashSet::new()),
+    |                                         ^^^^^^^ use of undeclared type `HashSet`
+    |
+    = note: struct `crate::ml::path_utils::HashSet` exists but is inaccessible
+help: a trait with a similar name exists
+    |
+472 -             active_devices: RwLock::new(HashSet::new()),
+472 +             active_devices: RwLock::new(Hasher::new()),
+    |
+help: consider importing this struct
+    |
+  3 + use std::collections::HashSet;
+    |
+
+error[E0433]: cannot find type `HashSet` in this scope
+   --> src\..\ml\pronax_ml_device_mgr.rs:892:21
+    |
+892 |     let mut paths = HashSet::new();
+    |                     ^^^^^^^ use of undeclared type `HashSet`
+    |
+    = note: struct `crate::ml::path_utils::HashSet` exists but is inaccessible
+help: a trait with a similar name exists
+    |
+892 -     let mut paths = HashSet::new();
+892 +     let mut paths = Hasher::new();
+    |
+help: consider importing this struct
+    |
+  3 + use std::collections::HashSet;
+    |
+
+warning: unused import: `Display`
+ --> src\..\ml\pronax_ml_backend_trait.rs:5:29
+  |
+5 | use std::fmt::{self, Debug, Display};
+  |                             ^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::pin::Pin`
+ --> src\..\ml\pronax_ml_backend_trait.rs:6:5
+  |
+6 | use std::pin::Pin;
+  |     ^^^^^^^^^^^^^
+
+warning: unused import: `AtomicU64`
+ --> src\..\ml\pronax_ml_backend_trait.rs:7:25
+  |
+7 | use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+  |                         ^^^^^^^^^
+
+warning: unused imports: `Duration` and `Instant`
+ --> src\..\ml\pronax_ml_backend_trait.rs:9:17
+  |
+9 | use std::time::{Duration, Instant};
+  |                 ^^^^^^^^  ^^^^^^^
+
+warning: unused import: `BytesMut`
+  --> src\..\ml\pronax_ml_backend_trait.rs:11:20
+   |
+11 | use bytes::{Bytes, BytesMut};
+   |                    ^^^^^^^^
+
+warning: unused import: `std::any::Any`
+ --> src\..\ml\pronax_ml_backend_core.rs:4:5
+  |
+4 | use std::any::Any;
+  |     ^^^^^^^^^^^^^
+
+warning: unused import: `Display`
+ --> src\..\ml\pronax_ml_backend_core.rs:6:29
+  |
+6 | use std::fmt::{self, Debug, Display};
+  |                             ^^^^^^^
+
+warning: unused import: `std::pin::Pin`
+ --> src\..\ml\pronax_ml_backend_core.rs:8:5
+  |
+8 | use std::pin::Pin;
+  |     ^^^^^^^^^^^^^
+
+warning: unused imports: `BytesMut` and `Bytes`
+  --> src\..\ml\pronax_ml_backend_core.rs:13:13
+   |
+13 | use bytes::{Bytes, BytesMut};
+   |             ^^^^^  ^^^^^^^^
+
+warning: unused import: `std::any::Any`
+ --> src\..\ml\pronax_ggml_backend.rs:4:5
+  |
+4 | use std::any::Any;
+  |     ^^^^^^^^^^^^^
+
+warning: unused import: `Display`
+ --> src\..\ml\pronax_ggml_backend.rs:6:29
+  |
+6 | use std::fmt::{self, Debug, Display};
+  |                             ^^^^^^^
+
+warning: unused imports: `DerefMut` and `Deref`
+ --> src\..\ml\pronax_ggml_backend.rs:7:16
+  |
+7 | use std::ops::{Deref, DerefMut};
+  |                ^^^^^  ^^^^^^^^
+
+warning: unused imports: `AtomicBool` and `AtomicU64`
+ --> src\..\ml\pronax_ggml_backend.rs:9:25
+  |
+9 | use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
+  |                         ^^^^^^^^^^  ^^^^^^^^^
+
+warning: unused import: `Mutex`
+  --> src\..\ml\pronax_ggml_backend.rs:10:22
+   |
+10 | use std::sync::{Arc, Mutex, RwLock, Weak};
+   |                      ^^^^^
+
+warning: unused import: `std::time::Instant`
+  --> src\..\ml\pronax_ggml_backend.rs:11:5
+   |
+11 | use std::time::Instant;
+   |     ^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `BytesMut` and `Bytes`
+  --> src\..\ml\pronax_ggml_backend.rs:13:13
+   |
+13 | use bytes::{Bytes, BytesMut};
+   |             ^^^^^  ^^^^^^^^
+
+warning: unused import: `bf16`
+  --> src\..\ml\pronax_ggml_backend.rs:14:12
+   |
+14 | use half::{bf16, f16};
+   |            ^^^^
+
+warning: unused import: `super::*`
+   --> src\..\ml\pronax_ggml_backend.rs:621:9
+    |
+621 |     use super::*;
+    |         ^^^^^^^^
+
+warning: unused import: `alloc`
+ --> src\..\ml\pronax_ml_quantization.rs:4:18
+  |
+4 | use std::alloc::{alloc, alloc_zeroed, dealloc, Layout};
+  |                  ^^^^^
+
+warning: unused import: `std::arch::x86_64::*`
+ --> src\..\ml\pronax_ml_quantization.rs:5:5
+  |
+5 | use std::arch::x86_64::*;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `AtomicUsize`
+ --> src\..\ml\pronax_ml_quantization.rs:8:36
+  |
+8 | use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+  |                                    ^^^^^^^^^^^
+
+warning: unused import: `std::sync::Arc`
+ --> src\..\ml\pronax_ml_quantization.rs:9:5
+  |
+9 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused imports: `Layout`, `alloc`, and `dealloc`
+ --> src\..\ml\pronax_ml_threading.rs:3:18
+  |
+3 | use std::alloc::{alloc, dealloc, Layout};
+  |                  ^^^^^  ^^^^^^^  ^^^^^^
+
+warning: unused import: `std::cell::Cell`
+ --> src\..\ml\pronax_ml_threading.rs:4:5
+  |
+4 | use std::cell::Cell;
+  |     ^^^^^^^^^^^^^^^
+
+warning: unused import: `VecDeque`
+ --> src\..\ml\pronax_ml_threading.rs:5:33
+  |
+5 | use std::collections::{HashMap, VecDeque};
+  |                                 ^^^^^^^^
+
+warning: unused import: `std::num::NonZeroUsize`
+ --> src\..\ml\pronax_ml_threading.rs:7:5
+  |
+7 | use std::num::NonZeroUsize;
+  |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::pin::Pin`
+ --> src\..\ml\pronax_ml_threading.rs:8:5
+  |
+8 | use std::pin::Pin;
+  |     ^^^^^^^^^^^^^
+
+warning: unused import: `Condvar`
+  --> src\..\ml\pronax_ml_threading.rs:10:31
+   |
+10 | use std::sync::{Arc, Barrier, Condvar, Mutex, RwLock};
+   |                               ^^^^^^^
+
+warning: unused import: `ThreadId`
+  --> src\..\ml\pronax_ml_threading.rs:11:37
+   |
+11 | use std::thread::{self, JoinHandle, ThreadId};
+   |                                     ^^^^^^^^
+
+warning: unused imports: `Receiver`, `Sender`, `bounded`, and `unbounded`
+  --> src\..\ml\pronax_ml_threading.rs:14:26
+   |
+14 | use crossbeam::channel::{bounded, unbounded, Receiver, Sender};
+   |                          ^^^^^^^  ^^^^^^^^^  ^^^^^^^^  ^^^^^^
+
+warning: unused import: `SpatialPrecision`
+  --> src\..\ml\pronax_ml_threading.rs:18:56
+   |
+18 | use crate::pronax_ml_backend_trait::{ExecutionCoord3D, SpatialPrecision};
+   |                                                        ^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Layout`, `alloc`, and `dealloc`
+ --> src\..\ml\pronax_ml_thread_debug.rs:3:18
+  |
+3 | use std::alloc::{alloc, dealloc, Layout};
+  |                  ^^^^^  ^^^^^^^  ^^^^^^
+
+warning: unused imports: `AtomicBool` and `AtomicUsize`
+ --> src\..\ml\pronax_ml_thread_debug.rs:6:25
+  |
+6 | use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
+  |                         ^^^^^^^^^^             ^^^^^^^^^^^
+
+warning: unused import: `Weak`
+ --> src\..\ml\pronax_ml_thread_debug.rs:7:37
+  |
+7 | use std::sync::{Arc, Mutex, RwLock, Weak};
+  |                                     ^^^^
+
+warning: unused imports: `SpatialTask`, `TitanSpatialThreadPool`, and `ZoneStats`
+  --> src\..\ml\pronax_ml_thread_debug.rs:12:34
+   |
+12 | use crate::pronax_ml_threading::{SpatialTask, TitanSpatialThreadPool, ZoneStats};
+   |                                  ^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^
+
+warning: unused imports: `AtomicBool`, `AtomicU64`, `AtomicUsize`, and `Ordering`
+ --> src\..\ml\pronax_ml_device_mgr.rs:6:25
+  |
+6 | use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
+  |                         ^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^  ^^^^^^^^
+
+warning: unused imports: `Arc` and `Mutex`
+ --> src\..\ml\pronax_ml_device_mgr.rs:7:17
+  |
+7 | use std::sync::{Arc, Mutex, RwLock};
+  |                 ^^^  ^^^^^
+
+warning: unused import: `HashSet`
+  --> src\..\ml\pronax_ml_path_utils.rs:10:33
+   |
+10 | use std::collections::{HashMap, HashSet};
+   |                                 ^^^^^^^
+
+warning: unused import: `std::collections::HashMap`
+ --> src\..\ml\nn\pronax_nn_attention.rs:4:5
+  |
+4 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::sync::Arc`
+ --> src\..\ml\nn\pronax_nn_attention.rs:5:5
+  |
+5 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused import: `std::collections::HashMap`
+ --> src\..\ml\nn\pronax_nn_convolution.rs:4:5
+  |
+4 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `VolumetricShape`
+ --> src\..\ml\nn\pronax_nn_normalization.rs:5:56
+  |
+5 | use crate::pronax_ml_backend_trait::{ExecutionCoord3D, VolumetricShape};
+  |                                                        ^^^^^^^^^^^^^^^
+
+warning: unused import: `VolumetricShape`
+ --> src\..\ml\nn\pronax_nn_pooling.rs:5:56
+  |
+5 | use crate::pronax_ml_backend_trait::{ExecutionCoord3D, VolumetricShape};
+  |                                                        ^^^^^^^^^^^^^^^
+
+warning: unused import: `VolumetricShape`
+ --> src\..\ml\nn\pronax_nn_rope.rs:6:56
+  |
+6 | use crate::pronax_ml_backend_trait::{ExecutionCoord3D, VolumetricShape};
+  |                                                        ^^^^^^^^^^^^^^^
+
+warning: ambiguous glob re-exports
+  --> src\lib.rs:61:13
+   |
+61 |     pub use crate::pronax_ml_backend_trait::*;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the name `DeviceType` in the type namespace is first re-exported 
+here
+...
+67 |     pub use crate::pronax_ml_device_mgr::*;
+   |             ------------------------------ but the name `DeviceType` in the type namespace is also re-exported 
+here
+   |
+   = note: `#[warn(ambiguous_glob_reexports)]` on by default
+
+warning: ambiguous glob re-exports
+  --> src\lib.rs:61:13
+   |
+61 |     pub use crate::pronax_ml_backend_trait::*;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the name `FlashAttentionMode` in the type namespace is first 
+re-exported here
+...
+67 |     pub use crate::pronax_ml_device_mgr::*;
+   |             ------------------------------ but the name `FlashAttentionMode` in the type namespace is also 
+re-exported here
+
+warning: ambiguous glob re-exports
+  --> src\lib.rs:70:13
+   |
+70 |     pub use crate::pronax_nn_convolution::*;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the name `TitanVolumetricBatchNorm` in the type namespace is first 
+re-exported here
+...
+73 |     pub use crate::pronax_nn_normalization::*;
+   |             --------------------------------- but the name `TitanVolumetricBatchNorm` in the type namespace is 
+also re-exported here
+
+warning: ambiguous glob re-exports
+  --> src\lib.rs:70:13
+   |
+70 |     pub use crate::pronax_nn_convolution::*;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the name `TitanVolumetricMaxPool` in the type namespace is first 
+re-exported here
+...
+74 |     pub use crate::pronax_nn_pooling::*;
+   |             --------------------------- but the name `TitanVolumetricMaxPool` in the type namespace is also 
+re-exported here
+
+warning: ambiguous glob re-exports
+  --> src\lib.rs:70:13
+   |
+70 |     pub use crate::pronax_nn_convolution::*;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the name `TitanVolumetricAvgPool` in the type namespace is first 
+re-exported here
+...
+74 |     pub use crate::pronax_nn_pooling::*;
+   |             --------------------------- but the name `TitanVolumetricAvgPool` in the type namespace is also 
+re-exported here
+
+warning: unused import: `crate::pronax_kvcache_trait::*`
+  --> src\lib.rs:77:13
+   |
+77 |     pub use crate::pronax_kvcache_trait::*;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some errors have detailed explanations: E0405, E0425, E0433, E0583.
+For more information about an error, try `rustc --explain E0405`.
+warning: `pronax-ai` (lib) generated 50 warnings
+error: could not compile `pronax-ai` (lib) due to 9 previous errors; 50 warnings emitted
